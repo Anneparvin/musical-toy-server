@@ -24,9 +24,10 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-   await client.connect();
+  
 
    const toysCollection = client.db('toyMaster').collection('toys');
+   const allToysCollection = client.db('toyMaster').collection('allToys');
 
   //  toy category
    app.get('/toys', async(req,res) => {
@@ -42,6 +43,30 @@ async function run() {
     console.log(selectedCard)
     res.send(selectedCard);
 })
+
+// alltoys 
+app.get('/allToys',async(req,res)=>{
+      const decoded = req.decoded;
+      
+      console.log('come back after verify', decoded);
+      if(decoded.email !== req.query.email){
+        return res.status(403).send({error: 1, message:'forbidden access'})
+      }
+      let query ={};
+
+    if(req.query?.email){
+      query = {email: req.query.email}
+    }
+      const result = await allToysCollection.find(query).toArray();
+      res.send(result);
+    })
+
+ app.post('/allToys',async(req,res) => {
+      const allToys = req.body;
+      console.log(allToys);
+      const result = await allToysCollection.insertOne(allToys);
+      res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
