@@ -45,21 +45,6 @@ async function run() {
 })
 
 // alltoys 
-app.get('/allToys',async(req,res)=>{
-      const decoded = req.decoded;
-      
-      console.log('come back after verify', decoded);
-      if(decoded.email !== req.query.email){
-        return res.status(403).send({error: 1, message:'forbidden access'})
-      }
-      let query ={};
-
-    if(req.query?.email){
-      query = {email: req.query.email}
-    }
-      const result = await allToysCollection.find(query).toArray();
-      res.send(result);
-    })
 
  app.post('/allToys',async(req,res) => {
       const allToys = req.body;
